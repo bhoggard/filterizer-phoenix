@@ -18,6 +18,11 @@ defmodule FilterizerWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
+    live "/neighborhoods", NeighborhoodLive.Index, :index
+    live "/neighborhoods/new", NeighborhoodLive.Form, :new
+    live "/neighborhoods/:id", NeighborhoodLive.Show, :show
+    live "/neighborhoods/:id/edit", NeighborhoodLive.Form, :edit
   end
 
   # Other scopes may use custom stacks.
