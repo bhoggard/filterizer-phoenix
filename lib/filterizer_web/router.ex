@@ -1,3 +1,4 @@
+
 defmodule FilterizerWeb.Router do
   use FilterizerWeb, :router
 
@@ -14,10 +15,19 @@ defmodule FilterizerWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :protected do
+    import Plug.BasicAuth
+    plug :basic_auth, username: "hello", password: "secret"
+  end
+
   scope "/", FilterizerWeb do
     pipe_through :browser
 
     get "/", PageController, :home
+  end
+
+  scope "/admin", FilterizerWeb do
+    pipe_through [:browser, :protected]
 
     live "/neighborhoods", NeighborhoodLive.Index, :index
     live "/neighborhoods/new", NeighborhoodLive.Form, :new
