@@ -11,8 +11,6 @@ config :filterizer,
   ecto_repos: [Filterizer.Repo],
   generators: [timestamp_type: :utc_datetime]
 
-config :filterizer, :basic_auth, username: System.get_env("FILTERIZER_USER"), password: System.get_env("FILTERIZER_PASS")
-
 # Configures the endpoint
 config :filterizer, FilterizerWeb.Endpoint,
   url: [host: "localhost"],
