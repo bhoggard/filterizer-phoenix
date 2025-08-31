@@ -17,7 +17,9 @@ defmodule FilterizerWeb.Router do
 
   pipeline :protected do
     import Plug.BasicAuth
-    plug :basic_auth, username: System.get_env("FILTERIZER_USER", "hello"), password: System.get_env("FILTERIZER_PASS", "secret")
+    plug :basic_auth,
+      username: Application.compile_env(:filterizer, :auth_username),
+      password: Application.compile_env(:filterizer, :auth_password)
   end
 
   scope "/", FilterizerWeb do
