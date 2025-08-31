@@ -16,6 +16,7 @@ defmodule FilterizerWeb.ConnCase do
   """
 
   use ExUnit.CaseTemplate
+  import Plug.Conn
 
   using do
     quote do
@@ -34,5 +35,10 @@ defmodule FilterizerWeb.ConnCase do
   setup tags do
     Filterizer.DataCase.setup_sandbox(tags)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
+  end
+
+  def with_valid_authorization_header(conn) do
+    conn
+    |> put_req_header("authorization", "Basic #{Base.encode64("hello:secret")}")
   end
 end

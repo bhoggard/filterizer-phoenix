@@ -26,8 +26,9 @@ defmodule FilterizerWeb.Router do
     get "/", PageController, :home
   end
 
-  scope "/admin", FilterizerWeb do
+  scope "/", FilterizerWeb do
     pipe_through [:browser, :protected]
+    # pipe_through [:browser]
 
     live "/neighborhoods", NeighborhoodLive.Index, :index
     live "/neighborhoods/new", NeighborhoodLive.Form, :new

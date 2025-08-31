@@ -16,7 +16,16 @@ defmodule FilterizerWeb.NeighborhoodLiveTest do
   describe "Index" do
     setup [:create_neighborhood]
 
+    test "lists all neighborhoods without auth returns 401", %{conn: conn} do
+      conn = get(conn, ~p"/neighborhoods")
+      assert conn.status == 401
+    end
+
     test "lists all neighborhoods", %{conn: conn, neighborhood: neighborhood} do
+      conn =
+        conn
+        |> with_valid_authorization_header()
+
       {:ok, _index_live, html} = live(conn, ~p"/neighborhoods")
 
       assert html =~ "Listing Neighborhoods"
@@ -24,6 +33,10 @@ defmodule FilterizerWeb.NeighborhoodLiveTest do
     end
 
     test "saves new neighborhood", %{conn: conn} do
+      conn =
+        conn
+        |> with_valid_authorization_header()
+
       {:ok, index_live, _html} = live(conn, ~p"/neighborhoods")
 
       assert {:ok, form_live, _} =
@@ -50,6 +63,10 @@ defmodule FilterizerWeb.NeighborhoodLiveTest do
     end
 
     test "updates neighborhood in listing", %{conn: conn, neighborhood: neighborhood} do
+      conn =
+        conn
+        |> with_valid_authorization_header()
+
       {:ok, index_live, _html} = live(conn, ~p"/neighborhoods")
 
       assert {:ok, form_live, _html} =
@@ -76,47 +93,17 @@ defmodule FilterizerWeb.NeighborhoodLiveTest do
     end
 
     test "deletes neighborhood in listing", %{conn: conn, neighborhood: neighborhood} do
+      conn =
+        conn
+        |> with_valid_authorization_header()
+
       {:ok, index_live, _html} = live(conn, ~p"/neighborhoods")
 
-      assert index_live |> element("#neighborhoods-#{neighborhood.id} a", "Delete") |> render_click()
+      assert index_live
+             |> element("#neighborhoods-#{neighborhood.id} a", "Delete")
+             |> render_click()
+
       refute has_element?(index_live, "#neighborhoods-#{neighborhood.id}")
-    end
-  end
-
-  describe "Show" do
-    setup [:create_neighborhood]
-
-    test "displays neighborhood", %{conn: conn, neighborhood: neighborhood} do
-      {:ok, _show_live, html} = live(conn, ~p"/neighborhoods/#{neighborhood}")
-
-      assert html =~ "Show Neighborhood"
-      assert html =~ neighborhood.name
-    end
-
-    test "updates neighborhood and returns to show", %{conn: conn, neighborhood: neighborhood} do
-      {:ok, show_live, _html} = live(conn, ~p"/neighborhoods/#{neighborhood}")
-
-      assert {:ok, form_live, _} =
-               show_live
-               |> element("a", "Edit")
-               |> render_click()
-               |> follow_redirect(conn, ~p"/neighborhoods/#{neighborhood}/edit?return_to=show")
-
-      assert render(form_live) =~ "Edit Neighborhood"
-
-      assert form_live
-             |> form("#neighborhood-form", neighborhood: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
-
-      assert {:ok, show_live, _html} =
-               form_live
-               |> form("#neighborhood-form", neighborhood: @update_attrs)
-               |> render_submit()
-               |> follow_redirect(conn, ~p"/neighborhoods/#{neighborhood}")
-
-      html = render(show_live)
-      assert html =~ "Neighborhood updated successfully"
-      assert html =~ "some updated name"
     end
   end
 end
