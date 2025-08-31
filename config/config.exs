@@ -9,9 +9,9 @@ import Config
 
 config :filterizer,
   ecto_repos: [Filterizer.Repo],
-  generators: [timestamp_type: :utc_datetime],
-  auth_username: System.get_env("FILTERIZER_USER"),
-  auth_password: System.get_env("FILTERIZER_PASS")
+  generators: [timestamp_type: :utc_datetime]
+
+config :filterizer, :basic_auth, username: System.get_env("FILTERIZER_USER"), password: System.get_env("FILTERIZER_PASS")
 
 # Configures the endpoint
 config :filterizer, FilterizerWeb.Endpoint,
